@@ -85,7 +85,7 @@ void weak_function stm32_spidev_initialize(void)
 #if defined(CONFIG_LCD_ST7567)
   stm32_configgpio(STM32_LCD_CS);     /* ST7567 chip select */
 #endif
-#if defined(CONFIG_STM32_SPI2) && defined(CONFIG_SENSORS_MAX6675)
+#if defined(CONFIG_STM32_SPI1) && defined(CONFIG_SENSORS_MAX6675)
   stm32_configgpio(GPIO_MAX6675_CS); /* MAX6675 chip select */
 #endif
 #if defined(CONFIG_LCD_UG2864AMBAG01) || defined(CONFIG_LCD_UG2864HSWEG01) || \
@@ -129,6 +129,13 @@ void weak_function stm32_spidev_initialize(void)
 void stm32_spi1select(FAR struct spi_dev_s *dev, uint32_t devid, bool selected)
 {
   spiinfo("devid: %d CS: %s\n", (int)devid, selected ? "assert" : "de-assert");
+
+#if defined(CONFIG_SENSORS_MAX6675)
+  if (devid == SPIDEV_TEMPERATURE(0))
+    {
+      stm32_gpiowrite(GPIO_MAX6675_CS, !selected);
+    }
+#endif
 
 #ifdef CONFIG_LPWAN_SX127X
   if (devid == SPIDEV_LPWAN(0))

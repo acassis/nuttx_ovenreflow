@@ -49,13 +49,13 @@
 #include "stm32_spi.h"
 #include "stm32f4discovery.h"
 
-#if defined(CONFIG_SPI) && defined(CONFIG_SENSORS_MAX6675) && defined(CONFIG_STM32_SPI2)
+#if defined(CONFIG_SPI) && defined(CONFIG_SENSORS_MAX6675) && defined(CONFIG_STM32_SPI1)
 
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
-#define MAX6675_SPI_PORTNO 2   /* On SPI2 */
+#define MAX6675_SPI_PORTNO 1   /* On SPI1 */
 
 /****************************************************************************
  * Public Functions

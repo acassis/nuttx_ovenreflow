@@ -134,7 +134,7 @@ static void zcross_disable(void)
 
   flags = enter_critical_section();
 
-  stm32_gpiosetevent(GPIO_ZEROCROSS, false, false, false, NULL);
+  stm32_gpiosetevent(GPIO_ZEROCROSS, false, false, false, NULL, NULL);
 
   leave_critical_section(flags);
 

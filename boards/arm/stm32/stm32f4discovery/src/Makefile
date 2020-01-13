@@ -61,6 +61,10 @@ ifeq ($(CONFIG_CAN),y)
 CSRCS += stm32_can.c
 endif
 
+ifeq ($(CONFIG_DEV_GPIO),y)
+  CSRCS += stm32_gpio.c
+endif
+
 ifeq ($(CONFIG_STM32_OTGFS),y)
 CSRCS += stm32_usb.c
 endif

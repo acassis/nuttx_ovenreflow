@@ -166,6 +166,15 @@ int stm32_bringup(void)
   stm32_bmp180initialize("/dev/press0");
 #endif
 
+#ifdef CONFIG_DEV_GPIO
+  ret = stm32_gpio_initialize();
+  if (ret < 0)
+    {
+      syslog(LOG_ERR, "Failed to initialize GPIO Driver: %d\n", ret);
+      return ret;
+    }
+#endif
+
 #ifdef CONFIG_SENSORS_BH1750FVI
   ret = stm32_bh1750initialize("/dev/light0");
   if (ret < 0)
