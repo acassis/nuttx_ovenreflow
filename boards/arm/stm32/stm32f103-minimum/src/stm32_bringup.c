@@ -293,6 +293,16 @@ int stm32_bringup(void)
     }
 #endif
 
+#ifdef CONFIG_SENSORS_MAX31855
+  /* Register device 0 on spi channel 1 */
+
+  ret = stm32_max31855initialize("/dev/temp0", 1, 0);
+  if (ret < 0)
+    {
+      serr("ERROR:  stm32_max31855initialize failed: %d\n", ret);
+    }
+#endif
+
 #ifdef CONFIG_SENSORS_MAX6675
   ret = stm32_max6675initialize("/dev/temp0");
   if (ret < 0)

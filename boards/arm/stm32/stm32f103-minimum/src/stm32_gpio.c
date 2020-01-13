@@ -126,7 +126,7 @@ static const uint32_t g_gpioinputs[BOARD_NGPIOIN] =
 static struct stm32gpio_dev_s g_gpin[BOARD_NGPIOIN];
 #endif
 
-#if BOARD_NGPIOOUT
+#if BOARD_NGPIOOUT > 0
 /* This array maps the GPIO pins used as OUTPUT */
 
 static const uint32_t g_gpiooutputs[BOARD_NGPIOOUT] =
@@ -152,17 +152,7 @@ static struct stm32gpint_dev_s g_gpint[BOARD_NGPIOINT];
  * Private Functions
  ****************************************************************************/
 
-static int stm32gpio_interrupt(int irq, void *context, void *arg)
-{
-  FAR struct stm32gpint_dev_s *stm32gpint = (FAR struct stm32gpint_dev_s *)arg;
-
-  DEBUGASSERT(stm32gpint != NULL && stm32gpint->callback != NULL);
-  gpioinfo("Interrupt! callback=%p\n", stm32gpint->callback);
-
-  stm32gpint->callback(&stm32gpint->stm32gpio.gpio, stm32gpint->stm32gpio.id);
-  return OK;
-}
-
+#if BOARD_NGPIOIN > 0
 static int gpin_read(FAR struct gpio_dev_s *dev, FAR bool *value)
 {
   FAR struct stm32gpio_dev_s *stm32gpio = (FAR struct stm32gpio_dev_s *)dev;
@@ -174,7 +164,9 @@ static int gpin_read(FAR struct gpio_dev_s *dev, FAR bool *value)
   *value = stm32_gpioread(g_gpioinputs[stm32gpio->id]);
   return OK;
 }
+#endif
 
+#if BOARD_NGPIOOUT > 0
 static int gpout_read(FAR struct gpio_dev_s *dev, FAR bool *value)
 {
   FAR struct stm32gpio_dev_s *stm32gpio = (FAR struct stm32gpio_dev_s *)dev;
@@ -196,6 +188,19 @@ static int gpout_write(FAR struct gpio_dev_s *dev, bool value)
   gpioinfo("Writing %d\n", (int)value);
 
   stm32_gpiowrite(g_gpiooutputs[stm32gpio->id], value);
+  return OK;
+}
+#endif
+
+#if BOARD_NGPIOINT > 0
+static int stm32gpio_interrupt(int irq, void *context, void *arg)
+{
+  FAR struct stm32gpint_dev_s *stm32gpint = (FAR struct stm32gpint_dev_s *)arg;
+
+  DEBUGASSERT(stm32gpint != NULL && stm32gpint->callback != NULL);
+  gpioinfo("Interrupt! callback=%p\n", stm32gpint->callback);
+
+  stm32gpint->callback(&stm32gpint->stm32gpio.gpio, stm32gpint->stm32gpio.id);
   return OK;
 }
 
@@ -255,6 +260,7 @@ static int gpint_enable(FAR struct gpio_dev_s *dev, bool enable)
 
   return OK;
 }
+#endif
 
 /****************************************************************************
  * Public Functions
